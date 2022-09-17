@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.dao.DictDao">
+
+    <sql id="columns">
+        select id,
+               parent_id,
+               name,
+               dict_code,
+               create_time,
+               update_time,
+               is_deleted
+        from hse_dict
+    </sql>
+
+    <!--根据id查询所有的子节点-->
+    <select id="findListByParentId" resultType="entity.Dict">
+        <include refid="columns"/>
+        where parent_id = #{id} and is_deleted = 0
+    </select>
+
+    <!--根据父id判断该节点是否是父节点-->
+    <select id="isParentNode" resultType="java.lang.Integer">
+        select count(id)
+        from hse_dict
+        where parent_id = #{id}
+          and is_deleted = 0
+    </select>
+
+    <!--根据编码获取dict对象-->
+    <select id="getDictByDictCode" resultType="entity.Dict">
+        <include refid="columns"/>
+        where dict_code = #{dictCode}
+    </select>
+
+    <!--根据id查询name-->
+    <select id="getNameById" resultType="java.lang.String">
+        select name
+        from hse_dict
+        where id = #{id}
+    </select>
+
+
+</mapper>

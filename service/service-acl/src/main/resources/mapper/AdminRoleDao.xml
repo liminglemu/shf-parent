@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.dao.AdminRoleDao">
+    <sql id="columns">
+        SELECT id,
+               role_id,
+               admin_id,
+               create_time,
+               update_time,
+               is_deleted
+        from acl_admin_role
+    </sql>
+
+    <!--进行重新添加用户的角色id-->
+    <insert id="addRoleAndAdminId">
+        insert acl_admin_role (role_id, admin_id)
+        VALUES (#{roleId}, #{adminId})
+    </insert>
+
+    <!--根据用户id删除已分配的角色id,删除是逻辑删除-->
+    <update id="deleteRoleIdsByAdminId">
+        update acl_admin_role
+        set is_deleted = 1
+        where admin_id = #{adminId}
+    </update>
+
+    <!--根据用户id查询用户已选择的角色id-->
+    <select id="findRoleIdsByAdminId" resultType="java.lang.Long">
+        select role_id
+        from acl_admin_role
+        where admin_id = #{adminId}
+          and is_deleted = 0
+    </select>
+</mapper>
